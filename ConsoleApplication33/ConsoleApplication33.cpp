@@ -1,4 +1,4 @@
-﻿#include <iostream>
+#include <iostream>
 #include <string>
 using namespace std;
 
@@ -34,6 +34,7 @@ private:
 public:
     Group() { numberOfStudents = 0; students = nullptr; }
     Group(int count) { numberOfStudents = count; students = new Student[numberOfStudents]; }
+    Group(const Group& other) { this->CopyFrom(other); }//КОНСТРУКТОР КОПИРОВАНИЯ
 
     bool operator == (const Group& other) const { return numberOfStudents == other.numberOfStudents; }
     bool operator != (const Group& other) const { return !(*this == other); }
@@ -60,6 +61,17 @@ public:
             students[i] = other.students[i];
         }
     }
+    //ПЕРЕГРУЗКА =
+    Group& operator = (const Group& other) {
+    if (this != &other) {
+        delete[] students;
+        numberOfStudents = other.numberOfStudents;
+        name = other.name;
+        course = other.course;
+        this->CopyFrom(other);
+    }
+    return *this;
+}
 
     void PrintStudents() {
         for (int i = 0; i < numberOfStudents; i++) {
@@ -125,5 +137,10 @@ int main() {
     cout << "Group2: " << "\n"; group2.PrintStudents();
     cout << " == " << (group1 == group2) << "\n";
     cout << " != " << (group1 != group2) << "\n";
+    
+    Group group3(group1);
+    Group group4; group4 = group2;
+    cout << "Group3: " << "\n"; group3.PrintStudents();
+    cout << "Group4: " << "\n"; group4.PrintStudents();
     return 0;
 }
